@@ -13,6 +13,7 @@ RUN apk update \
         curl \
         sed \
         jq \
+        graphviz \
     && rm -rf /var/cache/apk/*
 
 RUN python3 -m venv ${VIRTUAL_ENV}

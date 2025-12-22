@@ -2,6 +2,16 @@
 
 Terragrunt template for Infrastructure as Code (IaC)
 
+## make shell
+
+For any commands that are not defined in the Makefile, utilize the shell target.
+
+    $ make shell
+    ...
+    643a866c01fa:/apps$ terragrunt --version
+    643a866c01fa:/apps$ cd dev/foo/
+    f2eefeeef98b:/apps/dev/foo$ terragrunt run graph --out-dir=.tg-plans | dot -Tsvg > graph.svg
+
 ## find_in_parent_folders
 
 If no name is provided, find_in_parent_folders searches for terragrunt.hcl in the parent directories.
