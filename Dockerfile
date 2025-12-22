@@ -32,4 +32,4 @@ RUN adduser -D -u 100000 -g jenkins jenkins \
 
 USER jenkins
 
-CMD aws --version; terraform --version; terragrunt --version
+CMD ["aws", "--version", ";", "terraform", "--version", ";", "terragrunt", "--version"]

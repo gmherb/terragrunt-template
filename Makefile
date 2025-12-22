@@ -1,16 +1,13 @@
 SHELL := /bin/bash -exuo pipefail
 PWD != pwd
 
-# Makefile syntax
-# target: req1 req2
-# 	gcc -o $@ $^
-# $@ = target
-# $^ = req1 req2
-# $* = % (wildcard match)
+BASE_VERSION ?= latest
+BASE_IMAGE ?= alpine/terragrunt:$(BASE_VERSION)
 
-VERSION ?= latest
-CONTAINER := alpine/terragrunt:$(VERSION)
+BUILD_TAG != git rev-parse --short HEAD
+BUILD_IMAGE ?= gmherb/terragrunt-template:$(BUILD_TAG)
 
+CONTAINER ?= $(BUILD_IMAGE) #$(BASE_IMAGE)
 DOCKER_ARGS := docker run \
 		--interactive \
 		--rm \
@@ -18,13 +15,17 @@ DOCKER_ARGS := docker run \
 		--volume $(PWD):/apps \
 		--user $(shell id -u):$(shell id -g)
 
-PLAN_OUTPUT_DIR := .tg-plans
+PLAN_OUTPUT_DIR ?= .tg-plans
 PLAN_FILES != find . -name tfplan.tfplan
 CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's/.\///'
 
 .PHONY: list
 list:
 	LC_ALL=C $(MAKE) -pRrq -f $(firstword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/(^|\n)# Files(\n|$$)/,/(^|\n)# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
+
+.PHONY: build
+build:
+	docker buildx build --platform linux/amd64 -t $(BUILD_IMAGE) -f Dockerfile .
 
 .PHONY: shell
 shell:
