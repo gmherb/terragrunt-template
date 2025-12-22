@@ -41,9 +41,13 @@ version:
 	$(DOCKER_ARGS) $(CONTAINER) terraform --version
 	$(DOCKER_ARGS) $(CONTAINER) terragrunt --version
 
+.PHONY: info
+info:
+	$(DOCKER_ARGS) $(CONTAINER) terragrunt info print
+
 .PHONY: graph
 graph:
-	$(DOCKER_ARGS) $(CONTAINER) terragrunt dag graph | dot -Tsvg > graph.svg
+	$(DOCKER_ARGS) $(CONTAINER) terragrunt dag graph
 
 .PHONY: show
 show:
@@ -52,6 +56,10 @@ show:
 .PHONY: show-cache
 show-cache:
 	$(foreach var,$(CACHE_DIRS), $(DOCKER_ARGS) -w /apps $(CONTAINER) bash -c "cd ./$(var)/.terragrunt-cache/*/*/ && terraform show ../../../../.tg-plans/$(shell basename $(var))/tfplan.tfplan";)
+
+.PHONY: render-json
+render-json:
+	$(foreach var,$(CACHE_DIRS), $(DOCKER_ARGS) -w /apps $(CONTAINER) bash -c "cd ./$(var)/.terragrunt-cache/*/*/ && terragrunt render --json -w";)
 
 # DANGER: these next three targets will run across all environments.
 validate:
