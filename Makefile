@@ -15,7 +15,8 @@ DOCKER_ARGS := docker run \
 		--interactive \
 		--rm \
 		--tty \
-		--volume $(PWD):/apps
+		--volume $(PWD):/apps \
+		--user $(shell id -u):$(shell id -g)
 
 PLAN_OUTPUT_DIR := .tg-plans
 
