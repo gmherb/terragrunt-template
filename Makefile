@@ -68,20 +68,20 @@ validate-ci:
 	terragrunt run --all validate | tee $@
 
 plan-ci: validate-ci
-	scripts/abort_on_destroy.sh $(PLAN_OUTPUT_DIR)
 	terragrunt run --all plan --out-dir=$(PLAN_OUTPUT_DIR) | tee $@
 
 apply-ci: plan-ci
+	scripts/abort_on_destroy.sh $(PLAN_OUTPUT_DIR)
 	terragrunt run --all apply --out-dir=$(PLAN_OUTPUT_DIR) | tee $@
 
 validate-%-ci:
 	cd $*/; terragrunt run --all validate | tee $(PWD)/$@
 
 plan-%-ci: validate-%-ci
-	scripts/abort_on_destroy.sh $(PLAN_OUTPUT_DIR)
 	cd $*/; terragrunt run --all plan --out-dir=$(PLAN_OUTPUT_DIR) | tee $(PWD)/$@
 
 apply-%-ci: plan-%-ci
+	scripts/abort_on_destroy.sh $(PLAN_OUTPUT_DIR)
 	cd $*/; terragrunt run --all apply --out-dir=$(PLAN_OUTPUT_DIR) | tee $(PWD)/$@
 
 .PHONY: clean
