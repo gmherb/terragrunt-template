@@ -11,39 +11,49 @@
 #
 
 variable "environment" {
-    description = "The environment"
-    type = string
+  description = "The environment"
+  type        = string
 }
 
 variable "domain" {
-    description = "The domain"
-    type = string
+  description = "The domain"
+  type        = string
 }
 
 variable "deployment_name" {
-    description = "The deployment name"
-    type = string
+  description = "The deployment name"
+  type        = string
 }
 
 variable "module_version" {
-    description = "The module version for tracking purposes. Does not affect the module itself."
-    type = string
-}
-
-resource "null_resource" "this" {
-    triggers = {
-        environment = var.environment
-        domain = var.domain
-        deployment_name = var.deployment_name
-        module_version = var.module_version
-    }
-
+  description = "The module version for tracking purposes. Does not affect the module itself."
+  type        = string
 }
 
 locals {
-    example_output = "${var.domain}-${var.environment}-${var.deployment_name}-${var.module_version}"
+  example_output = "${var.domain}-${var.environment}-${var.deployment_name}-${var.module_version}"
+}
+
+resource "null_resource" "this" {
+  triggers = {
+    environment     = var.environment
+    domain          = var.domain
+    deployment_name = var.deployment_name
+    module_version  = var.module_version
+  }
+}
+
+resource "local_file" "this" {
+  content = local.example_output
+  filename = "${local.example_output}.txt"
+
+  lifecycle {
+    replace_triggered_by = [
+      null_resource.this
+    ]
+  }
 }
 
 output "example_output" {
-    value = local.example_output
+  value = local.example_output
 }

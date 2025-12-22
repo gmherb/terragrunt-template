@@ -6,12 +6,12 @@
 # terragrunt configuration and defining the source and version required
 #
 terraform {
-    #source = "git::ssh://git@github.com/example/example.git?ref=v1.0.0"
-    source = "../../modules/example"
+  #source = "git::ssh://git@github.com/example/example.git?ref=v1.0.0"
+  source = "../../modules/example"
 }
 
 # Set the module version for the example module to be used in tracking purposes.
 # Does not affect the module itself.
 inputs = {
-    module_version = "v1.0.0"
+  module_version = "v1.0.0"
 }

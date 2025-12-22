@@ -2,7 +2,7 @@
 
 # place inputs here for development specific inputs
 inputs = {
-    environment = "development"
+  environment = "development"
 }
 
 # place remote state here for development specific remote state

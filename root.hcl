@@ -74,7 +74,7 @@
 ########## INPUTS CONFIGURATION ##########
 # Place inputs configuration here if you want to use the same inputs for all environments.
 inputs = {
-    company_name = "my-company"
+  company_name = "my-company"
 }
 
 ########## ARGUMENTS CONFIGURATION ##########
@@ -91,7 +91,7 @@ terraform {
   # Force OpenTofu/Terraform to keep trying to acquire a lock for
   # up to 20 minutes if someone else already has the lock
   extra_arguments "retry_lock" {
-    commands  = get_terraform_commands_that_need_locking()
+    commands = get_terraform_commands_that_need_locking()
 
     arguments = [
       "-lock-timeout=20m"

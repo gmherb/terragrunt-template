@@ -2,7 +2,7 @@
 
 # place inputs here for production specific inputs
 inputs = {
-    environment = "production"
+  environment = "production"
 }
 
 # place remote state here for production specific remote state
