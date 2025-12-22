@@ -13,11 +13,11 @@ readonly TF_ENABLE_DESTROY=${TF_ENABLE_DESTROY:-false}
 
 # Check for environment variable to override the default behavior.
 [[ "${TF_ENABLE_DESTROY}" == "true" ]] && {
-    echo "TF_ENABLE_DESTROY is set to true. Destructive operations will be allowed."
+    echo "abort_on_destroy: TF_ENABLE_DESTROY is set to true. Destructive operations will be allowed."
     exit 0
 }
-echo "TF_ENABLE_DESTROY is either unset or false. Destructive operations will be blocked."
-echo "To allow destructive operations, set the TF_ENABLE_DESTROY variable to true."
+echo "abort_on_destroy: TF_ENABLE_DESTROY is either unset or false. Destructive operations will be blocked."
+echo "abort_on_destroy: To allow destructive operations, set the TF_ENABLE_DESTROY variable to true."
 
 function calculate_destroy_count {
   local plan_dir=$1
