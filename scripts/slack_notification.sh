@@ -14,7 +14,7 @@ readonly SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-"https://hooks.slack.com/service
 
 readonly BUILD_NUMBER=${BUILD_NUMBER:-"null"}
 # Exit if not running in Jenkins
-[[ $BUILD_NUMBER != "null" ]] && exit 0
+[[ $BUILD_NUMBER == "null" ]] && exit 0
 # Uncomment to run tests
 #readonly BUILD_TAG="TEST_TAG"
 #readonly BUILD_URL="TEST_URL"
@@ -40,9 +40,9 @@ COMMIT=$(jq -r '.[].commit' <<< $GIT_LOG_JSON)
 COMMIT_SHORT=${COMMIT:0:8}
 COMMIT_URL=$PROJECT_URL/commits/$COMMIT
 
-declare -A PLAN_COUNT
-PLAN_COUNT["dev"]=$(find dev/ -name terragrunt.hcl  -not -path "*/.terragrunt-cache/*" | wc -l | tr -d ' ')
-PLAN_COUNT["prod"]=$(find prod/ -name terragrunt.hcl  -not -path "*/.terragrunt-cache/*" | wc -l | tr -d ' ')
+declare -A UNIT_COUNT
+UNIT_COUNT["dev"]=$(find dev/ -name terragrunt.hcl  -not -path "*/.terragrunt-cache/*" | wc -l | tr -d ' ')
+UNIT_COUNT["prod"]=$(find prod/ -name terragrunt.hcl  -not -path "*/.terragrunt-cache/*" | wc -l | tr -d ' ')
 
 declare -A NO_CHANGES
 NO_CHANGES["dev"]=$(grep -c '^No changes. Your infrastructure matches the configuration.' plan-dev* || true)
@@ -144,7 +144,7 @@ PAYLOAD=$(cat <<EOF
 					"elements": [
 						{
 							"type": "text",
-							"text": "No Changes [${NO_CHANGES["dev"]}], Output Changes [${OUTPUT_CHANGES["dev"]}], Changes [${PLANS["dev"]}], Total Plans [${PLAN_COUNT["dev"]}] ...",
+							"text": "No Changes [${NO_CHANGES["dev"]}], Output Changes [${OUTPUT_CHANGES["dev"]}], Changes [${PLANS["dev"]}], Total Units [${UNIT_COUNT["dev"]}] ...",
 							"style": {
 								"italic": true
 							}
@@ -192,7 +192,7 @@ PAYLOAD=$(cat <<EOF
 					"elements": [
 						{
 							"type": "text",
-							"text": "No Changes [${NO_CHANGES["prod"]}], Output Changes [${OUTPUT_CHANGES["prod"]}], Changes [${PLANS["prod"]}], Total Plans [${PLAN_COUNT["prod"]}] ...",
+							"text": "No Changes [${NO_CHANGES["prod"]}], Output Changes [${OUTPUT_CHANGES["prod"]}], Changes [${PLANS["prod"]}], Total Units [${UNIT_COUNT["prod"]}] ...",
 							"style": {
 								"italic": true
 							}
