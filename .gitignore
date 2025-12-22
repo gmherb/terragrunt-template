@@ -1,0 +1,6 @@
+# Terragrunt cache
+.terragrunt-cache
+
+# Terragrunt plans
+.tg-plans
+graph.svg
