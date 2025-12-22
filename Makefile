@@ -94,6 +94,12 @@ clean:
 		plan \
 		plan-* \
 		validate \
-		validate-*
-	rm -rf $(PLAN_OUTPUT_DIR)
-	rm -f graph.svg
+		validate-* \
+		graph.svg
+	rm -rf $(PLAN_OUTPUT_DIR) \
+	    dev/$(PLAN_OUTPUT_DIR) \
+	    prod/$(PLAN_OUTPUT_DIR)
+
+.PHONY: slack-notification
+slack-notification:
+	scripts/slack_notification.sh

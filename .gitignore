@@ -4,3 +4,11 @@
 # Terragrunt plans
 .tg-plans
 graph.svg
+
+# Makefile artifacts
+plan-dev*
+plan-prod*
+validate-dev*
+validate-prod*
+apply-dev*
+apply-prod*
