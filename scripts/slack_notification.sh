@@ -14,11 +14,11 @@ readonly SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-"https://hooks.slack.com/service
 
 readonly BUILD_NUMBER=${BUILD_NUMBER:-"null"}
 # Exit if not running in Jenkins
-#[[ $BUILD_NUMBER == "null" ]] && exit
+[[ $BUILD_NUMBER != "null" ]] && exit 0
 # Uncomment to run tests
-readonly BUILD_TAG="TEST_TAG"
-readonly BUILD_URL="TEST_URL"
-readonly BRANCH_NAME="TEST_BRANCH"
+#readonly BUILD_TAG="TEST_TAG"
+#readonly BUILD_URL="TEST_URL"
+#readonly BRANCH_NAME="TEST_BRANCH"
 
 # Obtain abort_on_destroy information if it exists
 if [ -f abort_on_destroy ]; then
