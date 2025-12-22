@@ -19,6 +19,8 @@ DOCKER_ARGS := docker run \
 		--user $(shell id -u):$(shell id -g)
 
 PLAN_OUTPUT_DIR := .tg-plans
+PLAN_FILES != find . -name tfplan.tfplan
+CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's/.\///'
 
 .PHONY: list
 list:
@@ -41,6 +43,14 @@ version:
 .PHONY: graph
 graph:
 	$(DOCKER_ARGS) $(CONTAINER) terragrunt dag graph | dot -Tsvg > graph.svg
+
+.PHONY: show
+show:
+	$(foreach var,$(PLAN_FILES), $(DOCKER_ARGS) -w /apps $(CONTAINER) bash -c "cd $(shell dirname $(var)) && terraform show";)
+
+.PHONY: show-cache
+show-cache:
+	$(foreach var,$(CACHE_DIRS), $(DOCKER_ARGS) -w /apps $(CONTAINER) bash -c "cd ./$(var)/.terragrunt-cache/*/*/ && terraform show ../../../../.tg-plans/$(shell basename $(var))/tfplan.tfplan";)
 
 # DANGER: these next three targets will run across all environments.
 validate:

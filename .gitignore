@@ -1,6 +1,9 @@
 # Terragrunt cache
 .terragrunt-cache
 
+# Terraform plans
+tfplan.tfplan
+
 # Terragrunt plans
 .tg-plans
 graph.svg
