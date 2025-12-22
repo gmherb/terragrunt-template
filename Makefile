@@ -47,7 +47,7 @@ info:
 
 .PHONY: graph
 graph:
-	$(DOCKER_ARGS) $(CONTAINER) terragrunt dag graph
+	$(DOCKER_ARGS) $(CONTAINER) terragrunt dag graph | dot -Tsvg > graph.svg
 
 .PHONY: show
 show:
