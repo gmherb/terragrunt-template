@@ -13,6 +13,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = "${env.AWS_CREDS_PSW}"
         SSH_KEY_PATH          = credentials('terraform-service-account-ssh-key')
         TF_INPUT              = false // Assume yes to interactive prompts in terraform
+        TG_NON_INTERACTIVE    = true // Disable interactive prompts in terragrunt
     }
     parameters {
         booleanParam(name: 'TF_ENABLE_DESTROY', defaultValue: false, description: 'Toggle to enable DESTRUCTIVE terraform actions.')
