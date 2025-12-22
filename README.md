@@ -21,7 +21,7 @@ This layout starts with a space for development and production. Add more environ
     ├── _env
     │   ├── example
     │   │   └── common.hcl        / common configurations for example module
-    │   └── version
+    │   └── _version
     │       └── example.hcl       / module versioning for example module
     ├── Makefile
     ├── modules
