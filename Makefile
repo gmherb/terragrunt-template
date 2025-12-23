@@ -21,7 +21,7 @@ CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's/.
 
 .PHONY: list
 list:
-	@awk -F: '/^[a-zA-Z0-9][^$#\/\t=]*:/ {print $$1}' $(MAKEFILE_LIST) | sort | uniq
+	@awk -F: '/^[a-zA-Z0-9][^$#\/\t=]*:/ {print $$1}' $(MAKEFILE_LIST) | sort -u
 
 .PHONY: build
 build:
