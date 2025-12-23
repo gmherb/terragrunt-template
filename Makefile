@@ -22,7 +22,7 @@ CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's|^
 ENVIRONMENTS != find . -name environment.hcl | xargs -I {} dirname {} | sed 's|^\./||'
 
 TARGETS := $(shell awk -F: '/^[a-z_%-]+:/ {print $$1}' $(MAKEFILE_LIST) | sort -u)
-TARGETS += $(foreach var,$(ENVIRONMENTS), validate-$(var) validate-$(var)-ci plan-$(var) plan-$(var)-ci apply-$(var) apply-$(var)-ci)
+TARGETS += $(foreach env,$(ENVIRONMENTS), validate-$(env) validate-$(env)-ci plan-$(env) plan-$(env)-ci apply-$(env) apply-$(env)-ci)
 
 .PHONY: list
 list:
