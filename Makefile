@@ -21,7 +21,7 @@ CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's/.
 
 .PHONY: list
 list:
-	LC_ALL=C $(MAKE) -pRrq -f $(firstword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/(^|\n)# Files(\n|$$)/,/(^|\n)# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
+	@awk -F: '/^[a-zA-Z0-9][^$#\/\t=]*:/ {print $$1}' $(MAKEFILE_LIST) | sort | uniq
 
 .PHONY: build
 build:
