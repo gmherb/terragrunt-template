@@ -116,7 +116,8 @@ apply-%-ci: plan-%-ci
 
 .PHONY: clean
 clean:
-	find . -name .terragrunt-cache | xargs rm -rf
+	find . -name .terragrunt-cache -type d | xargs rm -rf
+	find . -name $(PLAN_OUTPUT_DIR) -type d | xargs rm -rf
 	rm -f \
 		apply \
 		apply-* \
@@ -125,9 +126,6 @@ clean:
 		validate \
 		validate-* \
 		graph.svg
-	rm -rf $(PLAN_OUTPUT_DIR) \
-	    dev/$(PLAN_OUTPUT_DIR) \
-	    prod/$(PLAN_OUTPUT_DIR)
 
 .PHONY: slack-notification
 slack-notification:
