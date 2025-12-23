@@ -1,4 +1,4 @@
-SHELL := /bin/bash -exuo pipefail
+SHELL := /bin/bash -euo pipefail
 PWD != pwd
 
 BASE_VERSION ?= latest
@@ -19,9 +19,18 @@ PLAN_OUTPUT_DIR ?= .tg-plans
 PLAN_FILES != find . -name tfplan.tfplan
 CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's/.\///'
 
+ENVIRONMENTS != find . -name environment.hcl | xargs -I {} dirname {} | sed 's/.\///'
+
+TARGETS := $(shell awk -F: '/^[a-z_%-]+:/ {print $$1}' $(MAKEFILE_LIST) | sort -u)
+TARGETS += $(foreach var,$(ENVIRONMENTS), validate-$(var) validate-$(var)-ci plan-$(var) plan-$(var)-ci apply-$(var) apply-$(var)-ci)
+
 .PHONY: list
 list:
-	@awk -F: '/^[a-zA-Z0-9][^$#\/\t=]*:/ {print $$1}' $(MAKEFILE_LIST) | sort -u
+	@echo $(TARGETS) | tr ' ' '\n' | sort -u
+
+.PHONY: envs
+envs:
+	@$(foreach var,$(ENVIRONMENTS), echo $(var);) | sort -u
 
 .PHONY: build
 build:
