@@ -17,9 +17,9 @@ DOCKER_ARGS := docker run \
 
 PLAN_OUTPUT_DIR ?= .tg-plans
 PLAN_FILES != find . -name tfplan.tfplan
-CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's/.\///'
+CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's|^\./||'
 
-ENVIRONMENTS != find . -name environment.hcl | xargs -I {} dirname {} | sed 's/.\///'
+ENVIRONMENTS != find . -name environment.hcl | xargs -I {} dirname {} | sed 's|^\./||'
 
 TARGETS := $(shell awk -F: '/^[a-z_%-]+:/ {print $$1}' $(MAKEFILE_LIST) | sort -u)
 TARGETS += $(foreach var,$(ENVIRONMENTS), validate-$(var) validate-$(var)-ci plan-$(var) plan-$(var)-ci apply-$(var) apply-$(var)-ci)
@@ -28,9 +28,10 @@ TARGETS += $(foreach var,$(ENVIRONMENTS), validate-$(var) validate-$(var)-ci pla
 list:
 	@echo $(TARGETS) | tr ' ' '\n' | sort -u
 
+# foreach is wrapped in subshell to sort output
 .PHONY: envs
 envs:
-	@$(foreach var,$(ENVIRONMENTS), echo $(var);) | sort -u
+	@($(foreach var,$(ENVIRONMENTS), echo $(var);)) | sort -u
 
 .PHONY: build
 build:
