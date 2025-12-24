@@ -19,19 +19,12 @@ PLAN_OUTPUT_DIR ?= .tg-plans
 PLAN_FILES != find . -name tfplan.tfplan
 CACHE_DIRS != find . -name .terragrunt-cache | xargs -I {} dirname {} | sed 's|^\./||'
 
-ENVIRONMENTS != find . -name environment.hcl | xargs -I {} dirname {} | sed 's|^\./||'
-
-TARGETS := $(shell awk -F: '/^[a-z_%-]+:/ {print $$1}' $(MAKEFILE_LIST) | sort -u)
-TARGETS += $(foreach env,$(ENVIRONMENTS), validate-$(env) validate-$(env)-ci plan-$(env) plan-$(env)-ci apply-$(env) apply-$(env)-ci)
-
 .PHONY: list
+list: ENVIRONMENTS != find . -name environment.hcl | xargs -I {} dirname {} | sed 's|^\./||'
+list: TARGETS != awk -F: '/^[a-z_%-]+:/ {print $$1}' $(MAKEFILE_LIST) | sort -u
+list: TARGETS += $(foreach env,$(ENVIRONMENTS), validate-$(env) validate-$(env)-ci plan-$(env) plan-$(env)-ci apply-$(env) apply-$(env)-ci)
 list:
 	@echo $(TARGETS) | tr ' ' '\n' | sort -u
-
-# foreach is wrapped in subshell to sort output
-.PHONY: envs
-envs:
-	@($(foreach var,$(ENVIRONMENTS), echo $(var);)) | sort -u
 
 .PHONY: build
 build:
