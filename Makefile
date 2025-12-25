@@ -129,7 +129,6 @@ clean:
 		graph.svg
 	[[ -z "$(IMAGES)" ]] || docker rmi $(IMAGES)
 
-
 .PHONY: slack-notification
 slack-notification:
 	scripts/slack_notification.sh
