@@ -1,4 +1,6 @@
-FROM alpine/terragrunt
+ARG BASE_IMAGE_VERSION=latest
+
+FROM alpine/terragrunt:${BASE_IMAGE_VERSION}
 
 ENV VIRTUAL_ENV=/opt/venv
 

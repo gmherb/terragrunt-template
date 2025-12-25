@@ -1,13 +1,13 @@
 SHELL := /bin/bash -euo pipefail
 PWD != pwd
 
-BASE_VERSION ?= latest
-BASE_IMAGE ?= alpine/terragrunt:$(BASE_VERSION)
+BASE_IMAGE_VERSION ?= latest
+BASE_IMAGE ?= alpine/terragrunt
 
+BUILD_IMAGE ?= gmherb/terragrunt-template
 BUILD_TAG != git rev-parse --short HEAD
-BUILD_IMAGE ?= gmherb/terragrunt-template:$(BUILD_TAG)
 
-CONTAINER ?= $(BUILD_IMAGE) #$(BASE_IMAGE)
+CONTAINER ?= $(BUILD_IMAGE):$(BUILD_TAG)
 DOCKER_ARGS := docker run \
 		--interactive \
 		--rm \
@@ -28,7 +28,12 @@ list:
 
 .PHONY: build
 build:
-	docker buildx build --platform linux/amd64 -t $(BUILD_IMAGE) -f Dockerfile .
+	docker buildx build \
+		--platform linux/amd64 \
+		--build-arg BASE_IMAGE_VERSION=$(BASE_IMAGE_VERSION) \
+		--tag $(CONTAINER) \
+		--file Dockerfile \
+		.
 
 .PHONY: shell
 shell:
@@ -43,6 +48,7 @@ fmt:
 version:
 	$(DOCKER_ARGS) $(CONTAINER) terraform --version
 	$(DOCKER_ARGS) $(CONTAINER) terragrunt --version
+	@printf "$(CONTAINER)\n"
 
 .PHONY: info
 info:
@@ -108,6 +114,8 @@ apply-%-ci: plan-%-ci
 	cd $*/; terragrunt run --all apply --out-dir=$(PLAN_OUTPUT_DIR) | tee $(PWD)/$@
 
 .PHONY: clean
+clean: IMAGES != docker image ls | grep $(BUILD_IMAGE) | awk '{print $$1}'
+clean: IMAGES := $(filter-out $(CONTAINER), $(IMAGES))
 clean:
 	find . -name .terragrunt-cache -type d | xargs rm -rf
 	find . -name $(PLAN_OUTPUT_DIR) -type d | xargs rm -rf
@@ -119,6 +127,8 @@ clean:
 		validate \
 		validate-* \
 		graph.svg
+	[[ -z "$(IMAGES)" ]] || docker rmi $(IMAGES)
+
 
 .PHONY: slack-notification
 slack-notification:
