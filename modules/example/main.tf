@@ -44,7 +44,7 @@ resource "null_resource" "this" {
 }
 
 resource "local_file" "this" {
-  content = local.example_output
+  content  = local.example_output
   filename = "${local.example_output}.txt"
 
   lifecycle {

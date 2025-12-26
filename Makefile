@@ -1,5 +1,9 @@
-SHELL := /bin/bash -euo pipefail
+SHELL := /bin/bash -eEuo pipefail
 PWD != pwd
+
+ifneq ($(V),1)
+.SILENT:
+endif
 
 BASE_IMAGE_VERSION ?= latest
 BASE_IMAGE ?= alpine/terragrunt
@@ -24,7 +28,7 @@ list: ENVIRONMENTS != find . -name environment.hcl | xargs -I {} dirname {} | se
 list: TARGETS != awk -F: '/^[a-z_%-]+:/ {print $$1}' $(MAKEFILE_LIST) | sort -u
 list: TARGETS += $(foreach env,$(ENVIRONMENTS), validate-$(env) validate-$(env)-ci plan-$(env) plan-$(env)-ci apply-$(env) apply-$(env)-ci)
 list:
-	@echo $(TARGETS) | tr ' ' '\n' | sort -u
+	@printf "%s\n" $(TARGETS) | sort -u
 
 .PHONY: build
 build:
@@ -48,15 +52,15 @@ fmt:
 version:
 	$(DOCKER_ARGS) $(CONTAINER) terraform --version
 	$(DOCKER_ARGS) $(CONTAINER) terragrunt --version
-	@printf "$(CONTAINER)\n"
+	@printf "%s\n" $(CONTAINER)
 
 .PHONY: info
-info:
+info: version
 	$(DOCKER_ARGS) $(CONTAINER) terragrunt info print
 
 .PHONY: graph
 graph:
-	$(DOCKER_ARGS) $(CONTAINER) terragrunt dag graph | dot -Tsvg > graph.svg
+	$(DOCKER_ARGS) $(CONTAINER) terragrunt dag graph
 
 .PHONY: show
 show:
